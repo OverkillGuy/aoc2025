@@ -5,6 +5,14 @@ The project uses semantic versioning (see [semver](https://semver.org)).
 
 ## [Unreleased]
 
+### Added
+
+- Solutions for day 1, exposed as aoc-runner plugins
+
+### Removed
+
+- CLI removed, in favour of the aoc-runner integration via plugin
+
 ## v0.1.0 - 2025-12-01
 
 ### Added

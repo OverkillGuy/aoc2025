@@ -1,34 +1,25 @@
 # Advent of Code 2025
 
-Python solutions to the Advent of Code 2025
+Python solutions to the Advent of Code 2025.
 
-Requires Python 3.13
+Requires Python 3.13.
 
 ## Usage
 
-Depends on what the code in there does.
+Using my [aoc-runner](https://github.com/OverkillGuy/aoc-runner) to run these
+solution as plugins:
 
-### Run the command
+Ensure you have aoc-runner installed in your current venv first.
+Once that's done, check your plugins are available:
 
-Install the module first:
-
-```shell
-make install
-# or
-uv sync
+``` shell
+aoc discover  # Should find your plugins!
 ```
 
-Then inside the virtual environment, launch the command:
+Then you can play the solution against your input:
 
-```shell
-# Run single command inside virtualenv
-uv run aoc2025
-
-# or
-# Load the virtualenv first
-source .venv/bin/activate
-# Then launch the command, staying in virtualenv
-aoc2025
+``` shell
+aoc run 2025-2-1 data/input02.txt
 ```
 
 ## Development
@@ -59,12 +50,12 @@ Python in uv:
 
 ```shell
 $ uv run python
->>> from aoc2025 import main
->>> main("blabla")
+>>> from aoc2025 import day1
+>>> day1.solution1("R100")
 ```
 
 This codebase uses [pre-commit](https://pre-commit.com) to run linting
-tools like `flake8`. Use `pre-commit install` to install git
+tools like `ruff`. Use `pre-commit install` to install git
 pre-commit hooks to force running these checks before any code can be
 committed, use `make lint` to run these manually. Testing is provided
 by `pytest` separately in `make test`.
