@@ -19,8 +19,18 @@ SAMPLE_INPUT = [-68, -30, +48, -5, +60, -55, -1, -99, +14, -82]
 
 
 def solution1(puzzle_input: list[Instruction]) -> int:
-    """Solve day1 part 1"""
-    return 12
+    """Solve day1 part 1
+
+    >>> solution1(SAMPLE_INPUT)
+    3
+    """
+    position = 50
+    acc = 0
+    for movement in puzzle_input:
+        position = (position + movement) % 100
+        if position == 0:
+            acc += 1
+    return acc
 
 
 def solution2(puzzle_input) -> int:
