@@ -1,0 +1,130 @@
+# Run 'make help' to see guidance on usage of this Makefile
+
+# Load .env file if any, for secrets+values (string value, scripts fail in .env)
+ifneq (,$(wildcard ./.env))
+	include .env
+	export
+endif
+
+# Variables set as fallback: descending priority is:
+# - 'make' invocation-level overrides
+# - values stored in .env, loaded
+# - Fallback values using ?=, see below:
+DOCKER_IMAGE_NAME?=aoc2025
+DOCKER_REGISTRY?=
+APP_VERSION?=$(shell uv version --short)
+
+
+## Default command, run via 'make' or 'make all'
+.PHONY: all
+all: install lint test docs build install-hooks
+
+## Generate the help message by reading the Makefile
+.PHONY: help
+help:
+	@echo "This makefile contains the following targets, from most commonly used to least: (docs first, then target name)"
+	@awk \
+		'/^##/ {sub(/## */,""); print} \
+		/^[a-z0-9-]+:/ && !/.PHONY:/ \
+			{sub(/:.*/, ""); print "⮡   \033[31;1;4m" $$0 "\033[0m\n" }' \
+		Makefile
+
+## Set up the virtualenv and install the package + dependencies
+.PHONY: install
+install:
+	uv sync
+
+## Run the linters and formatters on all files (not just staged for commit)
+.PHONY: lint
+lint:
+	pre-commit run --all --all-files
+
+## Run the tests
+.PHONY: test
+test:
+	uv run pytest
+
+## Generate the docs, both HTML and docsets
+.PHONY: docs
+docs:
+	cd docs && make html
+	uv run \
+		doc2dash \
+			--force \
+			--name aoc2025 \
+			docs/build/html \
+			--destination docs/build/docset
+
+## Serve the generated docs on a port of localhost
+.PHONY: docs-serve
+docs-serve:
+	cd docs/build/html && python3 -m http.server
+
+## Build the wheel/tarball package
+.PHONY: build
+build:
+	uv build
+
+## Set up the pre-commit hooks to execute on next git commit
+.PHONY: install-hooks
+install-hooks:
+	pre-commit install
+
+## Build the 'release' docker image (just the package installed)
+.PHONY: docker-build-release
+docker-build-release:
+	docker build \
+		-t "${DOCKER_REGISTRY}${DOCKER_IMAGE_NAME}:${APP_VERSION}" \
+		-f release.Dockerfile \
+		.
+
+## Build the 'dev' docker image (all tools and code)
+.PHONY: docker-build-dev
+docker-build-dev:
+	docker build -t ${DOCKER_IMAGE_NAME}-dev .
+
+##  Make a release commit + tag, creating Changelog entry
+##  Set BUMP variable to any of uv-supported (major, minor, patch)
+##  Default the bump to a patch (v1.2.3 -> v1.2.4)
+BUMP=patch
+.PHONY: release
+release:
+# Set the new version Makefile variable after the version bump
+	$(eval NEW_VERSION := $(shell uv version --short --bump ${BUMP}))
+	$(eval TMP_CHANGELOG := $(shell mktemp))
+	@sed \
+		"s;\(## \[Unreleased\]\);\1\n\n## v${NEW_VERSION} - $(shell date +%Y-%m-%d);" \
+		CHANGELOG.md > ${TMP_CHANGELOG}
+	@mv --force ${TMP_CHANGELOG} CHANGELOG.md
+	git add CHANGELOG.md pyproject.toml
+	git commit -m "Bump to version v${NEW_VERSION}"
+	git tag --annotate "v${NEW_VERSION}" \
+		--message "Release v${NEW_VERSION}"
+
+##  Less commonly used commands
+
+##  Generate/update the uv.lock file
+.PHONY: lock
+lock:
+	uv lock
+
+##  Update dependencies (within pyproject.toml specs)
+##  Update the lock-file at the same time
+.PHONY: update
+update:
+	uv lock --upgrade
+
+
+## Install tools (uv, pre-commit) via pipx
+## Assumes you have pipx installed
+# See https://jiby.tech/post/my-python-toolbox/#pipx-for-cli-installs-not-pip
+.PHONY: install-tools
+install-tools:
+	uv self version
+	uv tool install pre-commit
+
+## Delete the virtualenv to clean dependencies
+## Useful when switching to a branch with less dependencies
+.PHONY: venv-nuke
+venv-nuke:
+	find .venv -delete

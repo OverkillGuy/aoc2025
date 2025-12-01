@@ -1,0 +1,29 @@
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm as builder
+
+# Copy the project into the image
+WORKDIR /workdir
+COPY . /workdir
+
+# Generate both pinned dependencies list from lockfile (no dev-deps)
+# And the distribution binary (wheel) package
+RUN uv export \
+    --no-default-groups \
+    --locked --no-emit-workspace --no-editable \
+    --output-file requirements.lock.txt \
+    && uv build --wheel
+
+# Start over with just the binary package install
+FROM python:3.13-slim as runner
+
+# Bring the wheel file and the pinned dependency list
+COPY --from=builder /workdir/dist /workdir/requirements.lock.txt /app/
+
+# Compile Python source files to bytecode [...] tends to improve startup time
+# (at the cost of increased installation time)
+ENV UV_COMPILE_BYTECODE=1
+
+# Install the package
+RUN pip install --no-deps --no-cache-dir -r /app/requirements.lock.txt && \
+    pip install --no-deps --no-cache-dir /app/*.whl
+
+ENTRYPOINT ["aoc2025"]

@@ -1,0 +1,11 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v2.0.0a24
+_src_path: /home/jiby/dev/ws/python-template
+author_email: jb@jiby.tech
+author_name: Jb Doyon
+description: Python solutions to the Advent of Code 2025
+dynamic_versioning: false
+package_name: aoc2025
+project_name: Advent of Code 2025
+project_slug: aoc2025
+python_version: '3.13'

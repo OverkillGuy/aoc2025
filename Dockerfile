@@ -1,0 +1,42 @@
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm
+
+# Ensure tools installed by UV are on PATH right away
+# Per https://github.com/astral-sh/uv/issues/13057#issuecomment-2832631407
+ENV UV_TOOL_BIN_DIR=/usr/local/bin
+
+# Disable python version downloading, use what we got!
+ENV UV_PYTHON_DOWNLOADS=0
+
+
+ARG PRECOMMIT_VERSION=4.2.0
+RUN uv tool install \
+    "pre-commit==${PRECOMMIT_VERSION}"
+
+# Workaround critical-level CVEs in Python image
+# By forcing just security update (no featureful updates, as part of apt conf)
+# Also install make while we're at it, but ignore pinning version warning
+# hadolint ignore=DL3008
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y make \
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/*
+
+
+WORKDIR /workdir
+
+# Changing the default UV_LINK_MODE silences warnings about not being able to
+# use hard links since the cache and sync target are on separate file systems.
+ENV UV_LINK_MODE=copy
+
+# Install dependencies only, as they don't change often (note bindmount deplist)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked --no-install-project
+
+# Copy the actual project contents into the image
+COPY . /workdir
+
+# Sync the project now the code is present
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked
