@@ -33,9 +33,28 @@ def solution1(puzzle_input: list[Instruction]) -> int:
     return acc
 
 
-def solution2(puzzle_input) -> int:
-    """Solve day1 part 2"""
-    return 0
+def solution2(puzzle_input: list[Instruction]) -> int:
+    """Solve day1 part 2
+
+    >>> solution2([+1000])
+    10
+    >>> solution2(SAMPLE_INPUT)
+    6
+    """
+    position = 50
+    acc = 0
+    for movement in puzzle_input:
+        # Process each tick of movements
+        unit = 1 if movement > 0 else -1
+        for _ in range(abs(movement)):
+            position += unit
+            if position == 100:  # Cycle up
+                position = 0
+            if position == 0:
+                acc += 1
+            if position < 0:  # Cycle down
+                position = 99
+    return acc
 
 
 def read_puzzle_input(puzzle_input: str) -> list[Instruction]:

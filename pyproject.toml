@@ -77,3 +77,4 @@ check_untyped_defs = true
 
 [project.entry-points.'advent-of-code.solutions']
 2025-01-1 = "aoc2025.day1:solve1_string"
+2025-01-2 = "aoc2025.day1:solve2_string"
