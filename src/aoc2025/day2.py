@@ -22,6 +22,23 @@ SAMPLE_INPUT: list[Range] = [
 ]
 
 
+def is_invalid(product_id: int) -> bool:
+    """Check if a product_id is invalid
+
+    >>> [is_invalid(i) for i in [11, 22, 99, 1010, 1188511885]]
+    [True, True, True, True, True]
+    >>> is_invalid(11211)
+    False
+    """
+    id_str = str(product_id)
+    num_digits = len(id_str)
+    if num_digits % 2 == 1:
+        return False
+    half = num_digits // 2
+    first_half, second_half = id_str[:half], id_str[half:]
+    return first_half == second_half
+
+
 def solution1(puzzle_input) -> int:
     """Solve day2 part 1"""
     return 0
