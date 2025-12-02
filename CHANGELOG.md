@@ -5,9 +5,11 @@ The project uses semantic versioning (see [semver](https://semver.org)).
 
 ## [Unreleased]
 
+## v0.2.0 - 2025-12-02
+
 ### Added
 
-- Solutions for day 1, exposed as aoc-runner plugins
+- Solutions for day 1 and 2, exposed as aoc-runner plugins
 
 ### Removed
 
