@@ -101,8 +101,12 @@ def range_filter_invalid_part2(product_range: Range) -> list[int]:
 
 
 def solution2(puzzle_input: list[Range]) -> int:
-    """Solve day2 part 2"""
-    return 0
+    """Solve day2 part 2
+
+    >>> solution2(SAMPLE_INPUT)
+    4174379265
+    """
+    return sum(sum(range_filter_invalid_part2(range)) for range in puzzle_input)
 
 
 def read_puzzle_input(puzzle_input: str) -> list[Range]:
