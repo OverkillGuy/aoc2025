@@ -88,7 +88,19 @@ def is_invalid_part2(product_id: int) -> bool:
     return False
 
 
-def solution2(puzzle_input) -> int:
+def range_filter_invalid_part2(product_range: Range) -> list[int]:
+    """Filter the invalid IDs in a given range, for part 2
+
+    >>> [range_filter_invalid_part2(i) for i in SAMPLE_INPUT[:5]]
+    [[11, 22], [99, 111], [999, 1010], [1188511885], [222222]]
+    >>> [range_filter_invalid_part2(i) for i in SAMPLE_INPUT[5:]]
+    [[], [446446], [38593859], [565656], [824824824], [2121212121]]
+    """
+    start, end = product_range
+    return [i for i in range(start, end + 1) if is_invalid_part2(i)]
+
+
+def solution2(puzzle_input: list[Range]) -> int:
     """Solve day2 part 2"""
     return 0
 
