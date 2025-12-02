@@ -60,6 +60,34 @@ def solution1(puzzle_input: list[Range]) -> int:
     return sum(sum(range_filter_invalid(range)) for range in puzzle_input)
 
 
+def is_invalid_part2(product_id: int) -> bool:
+    """Check if a product_id is invalid per part2
+
+    >>> [is_invalid_part2(i) for i in [11, 22, 99, 111, 999, 1010, 1188511885, 222222]]
+    [True, True, True, True, True, True, True, True]
+    >>> [is_invalid_part2(i) for i in [446446, 38593859, 5656, 824824824, 2121212121]]
+    [True, True, True, True, True]
+    >>> is_invalid_part2(11211)
+    False
+    >>> [is_invalid_part2(i) for i in [11, 111, 11111]]
+    [True, True, True]
+    """
+    id_str = str(product_id)
+    num_digits = len(id_str)
+    half = num_digits // 2
+    # Try checking str against repeated first chars for 1, 2, up to half
+    for ngram_size in range(1, half + 1):
+        if num_digits % ngram_size != 0:
+            continue  # Generalized "odd cannot be repeating": 1112111, n % 3 != 0
+        # Generate the fully repeating pattern from prefix, for that ngram_size
+        num_repeat = num_digits // ngram_size
+        ngram_prefix = id_str[:ngram_size]
+        full_repeat = "".join(ngram_prefix * num_repeat)
+        if id_str == full_repeat:
+            return True
+    return False
+
+
 def solution2(puzzle_input) -> int:
     """Solve day2 part 2"""
     return 0
