@@ -57,10 +57,7 @@ def solution1(puzzle_input: list[Range]) -> int:
     >>> solution1(SAMPLE_INPUT)
     1227775554
     """
-    acc = 0
-    for range in puzzle_input:
-        acc += sum(range_filter_invalid(range))
-    return acc
+    return sum(sum(range_filter_invalid(range)) for range in puzzle_input)
 
 
 def solution2(puzzle_input) -> int:
