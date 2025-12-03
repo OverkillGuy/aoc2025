@@ -40,6 +40,23 @@ def solution1(puzzle_input: list[Bank]) -> int:
     return sum(max2_joltage(bank) for bank in puzzle_input)
 
 
+# FIXME: Doesn't work for the last digit properly: check 12 - i?
+def max12_joltage(batteries: Bank) -> int:
+    """Compute the maximum joltage for a given bank using 12 batteries
+
+    >>> [max12_joltage(i) for i in SAMPLE_INPUT]
+    [987654321111, 811111111119, 434234234278, 888911112111]
+    """
+    joltages = list(batteries)
+    top_digits = []
+    for i in range(0, 12):
+        max_digit = max(joltages[: -(12 - i)])  # Leave out last 12-i digit
+        top_digits.append(max_digit)
+        max_digit_index = joltages.index(max_digit)
+        joltages = joltages[max_digit_index + 1 :]
+    return int("".join(top_digits))
+
+
 def solution2(puzzle_input) -> int:
     """Solve day3 part 2"""
     return 0
