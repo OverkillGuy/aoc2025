@@ -17,10 +17,10 @@ SAMPLE_INPUT: list[Bank] = [
 ]
 
 
-def max_joltage(batteries: Bank) -> int:
-    """Compute the maximum joltage for a given bank
+def max2_joltage(batteries: Bank) -> int:
+    """Compute the maximum joltage for a given bank using 2 batteries
 
-    >>> [max_joltage(i) for i in SAMPLE_INPUT]
+    >>> [max2_joltage(i) for i in SAMPLE_INPUT]
     [98, 89, 78, 92]
     """
     joltages = list(batteries)
@@ -37,7 +37,7 @@ def solution1(puzzle_input: list[Bank]) -> int:
     >>> solution1(SAMPLE_INPUT)
     357
     """
-    return sum(max_joltage(bank) for bank in puzzle_input)
+    return sum(max2_joltage(bank) for bank in puzzle_input)
 
 
 def solution2(puzzle_input) -> int:
