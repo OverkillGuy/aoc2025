@@ -17,6 +17,20 @@ SAMPLE_INPUT: list[Bank] = [
 ]
 
 
+def max_joltage(batteries: Bank) -> int:
+    """Compute the maximum joltage for a given bank
+
+    >>> [max_joltage(i) for i in SAMPLE_INPUT]
+    [98, 89, 78, 92]
+    """
+    joltages = list(batteries)
+    max_digit = max(joltages[:-1])  # Leave out last digit
+    first_max_digit_index = joltages.index(max_digit)
+    second_max_digit = max(joltages[first_max_digit_index + 1 :])
+    top2_digits = max_digit + second_max_digit
+    return int("".join(top2_digits))
+
+
 def solution1(puzzle_input: list[Bank]) -> int:
     """Solve day3 part 1"""
     return 0
