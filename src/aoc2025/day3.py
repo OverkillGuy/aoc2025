@@ -32,8 +32,12 @@ def max_joltage(batteries: Bank) -> int:
 
 
 def solution1(puzzle_input: list[Bank]) -> int:
-    """Solve day3 part 1"""
-    return 0
+    """Solve day3 part 1
+
+    >>> solution1(SAMPLE_INPUT)
+    357
+    """
+    return sum(max_joltage(bank) for bank in puzzle_input)
 
 
 def solution2(puzzle_input) -> int:
