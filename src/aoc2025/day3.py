@@ -71,9 +71,13 @@ def max12_joltage(batteries: Bank) -> int:
     return int("".join(top_digits))
 
 
-def solution2(puzzle_input) -> int:
-    """Solve day3 part 2"""
-    return 0
+def solution2(puzzle_input: list[Bank]) -> int:
+    """Solve day3 part 2
+
+    >>> solution2(SAMPLE_INPUT)
+    3121910778619
+    """
+    return sum(max12_joltage(bank) for bank in puzzle_input)
 
 
 def read_puzzle_input(puzzle_input: str) -> list[Bank]:
