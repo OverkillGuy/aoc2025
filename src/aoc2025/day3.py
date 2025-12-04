@@ -40,20 +40,18 @@ def solution1(puzzle_input: list[Bank]) -> int:
     return sum(max2_joltage(bank) for bank in puzzle_input)
 
 
-def max12_joltage(batteries: Bank) -> int:
-    """Compute the maximum joltage for a given bank using 12 batteries
+def maxn_joltage(batteries: Bank, n: int) -> int:
+    """Compute the maximum joltage for a given bank, generalized for n batteries
 
-    Generalized for n (here n=12):
     Iterate the search the maximum of interval [idx+1: - (n - i - 1)] in general
 
     But on the edge boundaries of the list (i = 0 and i = n - 1)
     we address the range differently to express "take all of the edge".
 
-    >>> [max12_joltage(i) for i in SAMPLE_INPUT]
+    >>> [maxn_joltage(i, 12) for i in SAMPLE_INPUT]
     [987654321111, 811111111119, 434234234278, 888911112111]
     """
     joltages = list(batteries)
-    n = 12
     top_digits = []
     idx = -1  # Want to start range at l[0:], but since l[idx+1:], set idx = -1
     for i in range(0, n):
@@ -77,7 +75,7 @@ def solution2(puzzle_input: list[Bank]) -> int:
     >>> solution2(SAMPLE_INPUT)
     3121910778619
     """
-    return sum(max12_joltage(bank) for bank in puzzle_input)
+    return sum(maxn_joltage(bank, 12) for bank in puzzle_input)
 
 
 def read_puzzle_input(puzzle_input: str) -> list[Bank]:
