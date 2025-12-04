@@ -3,7 +3,7 @@ name = "aoc2025"
 description = "Python solutions to the Advent of Code 2025"
 authors = [ { name= "Jb Doyon", email= "jb@jiby.tech" } ]
 readme = "README.md"
-version = "0.2.0"
+version = "0.3.0"
 
 requires-python = ">=3.13"
 dependencies = []
