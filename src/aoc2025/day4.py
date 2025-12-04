@@ -1,5 +1,34 @@
 """Day 4 solution to AoC 2025"""
 
+type Grid = list[list[bool]]
+"""A 2D grid of bools (True if is a roll)"""
+
+SAMPLE_INPUT_STR = """..@@.@@@@.
+@@@.@.@.@@
+@@@@@.@.@@
+@.@@@@..@.
+@@.@@@@.@@
+.@@@@@@@.@
+.@.@.@.@@@
+@.@@@.@@@@
+.@@@@@@@@.
+@.@.@@@.@.
+"""
+
+
+SAMPLE_INPUT: Grid = [
+    [False, False, True, True, False, True, True, True, True, False],
+    [True, True, True, False, True, False, True, False, True, True],
+    [True, True, True, True, True, False, True, False, True, True],
+    [True, False, True, True, True, True, False, False, True, False],
+    [True, True, False, True, True, True, True, False, True, True],
+    [False, True, True, True, True, True, True, True, False, True],
+    [False, True, False, True, False, True, False, True, True, True],
+    [True, False, True, True, True, False, True, True, True, True],
+    [False, True, True, True, True, True, True, True, True, False],
+    [True, False, True, False, True, True, True, False, True, False],
+]
+
 
 def solution1(puzzle_input) -> int:
     """Solve day4 part 1"""
@@ -11,10 +40,14 @@ def solution2(puzzle_input) -> int:
     return 0
 
 
+def read_puzzle_input(puzzle_input: str) -> Grid:
+    """Process the puzzle input string
 
-def read_puzzle_input(puzzle_input: str):
-    """Process the puzzle input string"""
-    return puzzle_input.splitlines()
+    >>> read_puzzle_input(SAMPLE_INPUT_STR) == SAMPLE_INPUT
+    True
+    """
+    lines = [list(line) for line in puzzle_input.splitlines()]
+    return [[c == "@" for c in line] for line in lines]
 
 
 def solve1_string(puzzle_input: str) -> int:
