@@ -17,10 +17,10 @@ SAMPLE_INPUT: list[Bank] = [
 ]
 
 
-def max_joltage(batteries: Bank) -> int:
-    """Compute the maximum joltage for a given bank
+def max2_joltage(batteries: Bank) -> int:
+    """Compute the maximum joltage for a given bank using 2 batteries
 
-    >>> [max_joltage(i) for i in SAMPLE_INPUT]
+    >>> [max2_joltage(i) for i in SAMPLE_INPUT]
     [98, 89, 78, 92]
     """
     joltages = list(batteries)
@@ -37,12 +37,45 @@ def solution1(puzzle_input: list[Bank]) -> int:
     >>> solution1(SAMPLE_INPUT)
     357
     """
-    return sum(max_joltage(bank) for bank in puzzle_input)
+    return sum(max2_joltage(bank) for bank in puzzle_input)
 
 
-def solution2(puzzle_input) -> int:
-    """Solve day3 part 2"""
-    return 0
+def maxn_joltage(batteries: Bank, n: int) -> int:
+    """Compute the maximum joltage for a given bank, generalized for n batteries
+
+    Iterate the search the maximum of interval [idx+1: - (n - i - 1)] in general
+
+    But on the edge boundaries of the list (i = 0 and i = n - 1)
+    we address the range differently to express "take all of the edge".
+
+    >>> [maxn_joltage(i, 12) for i in SAMPLE_INPUT]
+    [987654321111, 811111111119, 434234234278, 888911112111]
+    """
+    joltages = list(batteries)
+    top_digits = []
+    idx = -1  # Want to start range at l[0:], but since l[idx+1:], set idx = -1
+    for i in range(0, n):
+        start_range = idx + 1
+        # When searching i-th joltage, leave out the right most digits for later
+        end_range = -(n - i - 1)
+        if i + 1 == n:  # But at the end, take ALL:
+            # Cannot express l[:], because l[:-0] fails, so we go for l[:len(l)]
+            end_range = len(joltages)
+        pick_range = joltages[start_range:end_range]
+        max_digit = max(pick_range)
+        top_digits.append(max_digit)
+        # Pick from the real joltages (using real offsets, not from pick_range!)
+        idx = batteries.index(max_digit, start_range, end_range)
+    return int("".join(top_digits))
+
+
+def solution2(puzzle_input: list[Bank]) -> int:
+    """Solve day3 part 2
+
+    >>> solution2(SAMPLE_INPUT)
+    3121910778619
+    """
+    return sum(maxn_joltage(bank, 12) for bank in puzzle_input)
 
 
 def read_puzzle_input(puzzle_input: str) -> list[Bank]:

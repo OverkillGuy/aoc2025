@@ -5,6 +5,10 @@ The project uses semantic versioning (see [semver](https://semver.org)).
 
 ## [Unreleased]
 
+### Added
+
+- Solutions for day 3
+
 ## v0.2.0 - 2025-12-02
 
 ### Added
