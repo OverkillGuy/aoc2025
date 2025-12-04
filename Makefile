@@ -96,7 +96,8 @@ release:
 		"s;\(## \[Unreleased\]\);\1\n\n## v${NEW_VERSION} - $(shell date +%Y-%m-%d);" \
 		CHANGELOG.md > ${TMP_CHANGELOG}
 	@mv --force ${TMP_CHANGELOG} CHANGELOG.md
-	git add CHANGELOG.md pyproject.toml
+	uv lock
+	git add CHANGELOG.md pyproject.toml uv.lock
 	git commit -m "Bump to version v${NEW_VERSION}"
 	git tag --annotate "v${NEW_VERSION}" \
 		--message "Release v${NEW_VERSION}"
