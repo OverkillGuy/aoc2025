@@ -1,3 +1,6 @@
+# Advent of code data downloaded here by hand, we don't mind.
+data/
+
 ################################################################################
 # Global ignore list, common in BOTH .dockerignore, and .gitignore
 # Make sure that whatever is done below is copied to the other file
