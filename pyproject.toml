@@ -6,7 +6,9 @@ readme = "README.md"
 version = "0.3.0"
 
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "xarray>=2025.11.0",
+]
 
 # Replace the "dev" dependency with docs + test dep-groups
 [tool.uv]
