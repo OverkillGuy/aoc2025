@@ -55,14 +55,20 @@ def count8(grid: Grid) -> Grid:
     return count8[1:-1, 1:-1]
 
 
+def find_reachable_rolls(g: Grid) -> Grid:
+    """Find reachable rolls"""
+    count8_under4 = count8(g) < 4
+    return count8_under4 & g
+
+
 def solution1(puzzle_input: Grid) -> int:
     """Solve day4 part 1
 
     >>> solution1(SAMPLE_INPUT)
     13
     """
-    count8_under4 = count8(puzzle_input) < 4
-    return int(np.sum(count8_under4 & puzzle_input))
+    reachable_rolls = find_reachable_rolls(puzzle_input)
+    return int(np.sum(reachable_rolls))
 
 
 def solution2(puzzle_input) -> int:
