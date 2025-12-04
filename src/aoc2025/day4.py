@@ -55,9 +55,14 @@ def count8(grid: Grid) -> Grid:
     return count8[1:-1, 1:-1]
 
 
-def solution1(puzzle_input) -> int:
-    """Solve day4 part 1"""
-    return 0
+def solution1(puzzle_input: Grid) -> int:
+    """Solve day4 part 1
+
+    >>> solution1(SAMPLE_INPUT)
+    13
+    """
+    count8_under4 = count8(puzzle_input) < 4
+    return int(np.sum(count8_under4 & puzzle_input))
 
 
 def solution2(puzzle_input) -> int:
