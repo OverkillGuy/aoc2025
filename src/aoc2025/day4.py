@@ -61,6 +61,11 @@ def find_reachable_rolls(g: Grid) -> Grid:
     return count8_under4 & g
 
 
+def count_array(g: Grid) -> int:
+    """Count the number of items that are True"""
+    return int(np.sum(g))
+
+
 def solution1(puzzle_input: Grid) -> int:
     """Solve day4 part 1
 
@@ -68,12 +73,30 @@ def solution1(puzzle_input: Grid) -> int:
     13
     """
     reachable_rolls = find_reachable_rolls(puzzle_input)
-    return int(np.sum(reachable_rolls))
+    return count_array(reachable_rolls)
 
 
-def solution2(puzzle_input) -> int:
-    """Solve day4 part 2"""
-    return 0
+def iterate(g: Grid) -> tuple[Grid, int]:
+    """Find reachable, and iterate"""
+    reachable = find_reachable_rolls(g)
+    now_reachable = g & (~reachable)  # Remove reachables (X AND (NOT TRUE))
+    return now_reachable, count_array(reachable)
+
+
+def solution2(puzzle_input: Grid) -> int:
+    """Solve day4 part 2
+
+    >>> solution2(SAMPLE_INPUT)
+    43
+    """
+    old_grid = np.zeros_like(puzzle_input, dtype=bool)
+    new_grid = puzzle_input
+    acc = 0
+    while not ((new_grid == old_grid).all()):  # Until we're done changing
+        old_grid = new_grid
+        new_grid, count = iterate(old_grid)
+        acc += count
+    return acc
 
 
 def read_puzzle_input(puzzle_input: str) -> Grid:
