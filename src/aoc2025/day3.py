@@ -40,20 +40,34 @@ def solution1(puzzle_input: list[Bank]) -> int:
     return sum(max2_joltage(bank) for bank in puzzle_input)
 
 
-# FIXME: Doesn't work for the last digit properly: check 12 - i?
 def max12_joltage(batteries: Bank) -> int:
     """Compute the maximum joltage for a given bank using 12 batteries
+
+    Generalized for n (here n=12):
+    Iterate the search the maximum of interval [idx+1: - (n - i - 1)] in general
+
+    But on the edge boundaries of the list (i = 0 and i = n - 1)
+    we address the range differently to express "take all of the edge".
 
     >>> [max12_joltage(i) for i in SAMPLE_INPUT]
     [987654321111, 811111111119, 434234234278, 888911112111]
     """
     joltages = list(batteries)
+    n = 12
     top_digits = []
-    for i in range(0, 12):
-        max_digit = max(joltages[: -(12 - i)])  # Leave out last 12-i digit
+    idx = -1  # Want to start range at l[0:], but since l[idx+1:], set idx = -1
+    for i in range(0, n):
+        start_range = idx + 1
+        # When searching i-th joltage, leave out the right most digits for later
+        end_range = -(n - i - 1)
+        if i + 1 == n:  # But at the end, take ALL:
+            # Cannot express l[:], because l[:-0] fails, so we go for l[:len(l)]
+            end_range = len(joltages)
+        pick_range = joltages[start_range:end_range]
+        max_digit = max(pick_range)
         top_digits.append(max_digit)
-        max_digit_index = joltages.index(max_digit)
-        joltages = joltages[max_digit_index + 1 :]
+        # Pick from the real joltages (using real offsets, not from pick_range!)
+        idx = batteries.index(max_digit, start_range, end_range)
     return int("".join(top_digits))
 
 
