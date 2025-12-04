@@ -86,7 +86,7 @@ docker-build-dev:
 ##  Make a release commit + tag, creating Changelog entry
 ##  Set BUMP variable to any of uv-supported (major, minor, patch)
 ##  Default the bump to a patch (v1.2.3 -> v1.2.4)
-BUMP=patch
+BUMP=minor
 .PHONY: release
 release:
 # Set the new version Makefile variable after the version bump
