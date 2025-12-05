@@ -30,6 +30,18 @@ SAMPLE_INPUT: PuzzleInput = (
 )
 
 
+def is_fresh(ingredient: int, freshs: FreshRanges) -> bool:
+    """Checks if given ingredient is fresh
+
+    >>> [is_fresh(i, SAMPLE_INPUT[0]) for i in SAMPLE_INPUT[1]]
+    [False, True, False, True, True, False]
+    """
+    for start, end in freshs:
+        if start <= ingredient <= end:
+            return True
+    return False
+
+
 def solution1(puzzle_input) -> int:
     """Solve day5 part 1"""
     return 0
