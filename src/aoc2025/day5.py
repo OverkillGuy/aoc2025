@@ -42,9 +42,14 @@ def is_fresh(ingredient: int, freshs: FreshRanges) -> bool:
     return False
 
 
-def solution1(puzzle_input) -> int:
-    """Solve day5 part 1"""
-    return 0
+def solution1(puzzle_input: PuzzleInput) -> int:
+    """Solve day5 part 1
+
+    >>> solution1(SAMPLE_INPUT)
+    3
+    """
+    fresh, available = puzzle_input
+    return sum(is_fresh(item, fresh) for item in available)
 
 
 def solution2(puzzle_input) -> int:
