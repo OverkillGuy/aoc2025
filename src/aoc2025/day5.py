@@ -52,9 +52,38 @@ def solution1(puzzle_input: PuzzleInput) -> int:
     return sum(is_fresh(item, fresh) for item in available)
 
 
-def solution2(puzzle_input) -> int:
-    """Solve day5 part 2"""
-    return 0
+def expand(ranges: list[Range]) -> list[bool]:
+    """Expand the ranges of which ids are covered, to a list of covered-ness
+
+    Index +1, maps back to the id being checked.
+
+    NOTE: Uses, returns O(N) in memory, N = max(all ranges' end-value) in bits.
+    This is obviously prohibitive when N >> 1e12 = Gigabytes range!
+
+    For that reason, throws a ValueError when N > 1e12.
+
+
+    >>> expand([(1, 3), (2, 5)])
+    [True, True, True, True, True]
+    >>> expand([(1, 2), (4, 5)])
+    [True, True, False, True, True]
+    >>> expand([(1, 2), (4, 6)])
+    [True, True, False, True, True, True]
+    >>> expand([(1, 1), (4, 4)])
+    [True, False, False, True]
+
+    """
+    max_range = max([end for _start, end in ranges])
+    if max_range > 1e12:
+        raise ValueError("Aborting as memory required would exceed 1GiB")
+    ids = [False for _ in range(max_range)]
+    for start, end in ranges:
+        expanded = list(range(start - 1, end))  # Move to 0-indexing via N-1
+        for i in expanded:
+            ids[i] = True
+    return ids
+
+
 
 
 def read_puzzle_input(puzzle_input: str) -> PuzzleInput:
