@@ -1,7 +1,9 @@
 """Day 6 solution to AoC 2025"""
 
 import re
-from typing import Literal, cast
+from typing import Any, Literal, cast
+
+import numpy as np
 
 type Operator = Literal["*", "+"]
 type Sheet = list[list[int]]
@@ -18,10 +20,26 @@ SAMPLE_INPUT: PuzzleInput = (
     ["*", "+", "*", "+"],
 )
 
+# np.add, np.mul aren't JUST Callables, as we use their .reduce() method
+# So use ANY type as shortcut, cannae be bothered
+OP_MAP: dict[Operator, Any] = {"*": np.multiply, "+": np.add}
 
-def solution1(puzzle_input) -> int:
-    """Solve day6 part 1"""
-    return 0
+
+def solution1(puzzle_input: PuzzleInput) -> int:
+    """Solve day6 part 1
+
+    >>> solution1(SAMPLE_INPUT)
+    4277556
+    """
+    acc = 0
+    sheet, operators = puzzle_input
+    grid = np.array(sheet, dtype=int)
+    # Along the rows (remember Numpy's array-addressing)
+    for i in range(grid.shape[1]):
+        # Reduce by that operator
+        op_func = OP_MAP[operators[i]]
+        acc += int(op_func.reduce(grid[:, i]))
+    return acc
 
 
 def solution2(puzzle_input) -> int:
