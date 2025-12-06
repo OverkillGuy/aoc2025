@@ -127,9 +127,8 @@ def merge(ranges: list[Range]) -> list[Range]:
     """
     sorted_ranges = sorted(ranges, key=lambda range: range[0])
     acc = []
-    s0, e0 = sorted_ranges.pop(0)
-    while sorted_ranges:
-        s1, e1 = sorted_ranges.pop(0)
+    s0, e0 = sorted_ranges[0]
+    for s1, e1 in sorted_ranges[1:]:
         # Overlap / Adjacent: Collapse, taking biggest
         if s1 <= e0 + 1:
             e0 = max(e0, e1)
@@ -137,7 +136,7 @@ def merge(ranges: list[Range]) -> list[Range]:
             # Not adjacent: collect the interval 0, ratchet up interval
             acc.append((s0, e0))
             s0, e0 = s1, e1
-    # Pick last remaining interval too
+    # Remembering to pick the last remaining interval
     return acc + [(s0, e0)]
 
 
