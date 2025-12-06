@@ -86,6 +86,23 @@ def expand(ranges: list[Range]) -> list[bool]:
 
 
 
+def solution2(puzzle_input: PuzzleInput) -> int:
+    """Solve day5 part 2
+
+    Solved by expanding ALL ranges into a "map of covered ids" as bool-array.
+    This way we unroll range 1-3 to tick to True ids 1, 2, and 3.
+    Repeat coverage flips True to still True, dealing with overlaps.
+    No need to deal with ordering of ranges either, as all will be covered.
+
+    We just need to count the resulting range, once expanded as a "list of ids"
+
+    >>> solution2(SAMPLE_INPUT)
+    14
+    """
+    fresh, _ = puzzle_input
+    return sum(expand(fresh))
+
+
 def read_puzzle_input(puzzle_input: str) -> PuzzleInput:
     """Process the puzzle input string
 
