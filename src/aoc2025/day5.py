@@ -52,9 +52,110 @@ def solution1(puzzle_input: PuzzleInput) -> int:
     return sum(is_fresh(item, fresh) for item in available)
 
 
-def solution2(puzzle_input) -> int:
-    """Solve day5 part 2"""
-    return 0
+def expand(ranges: list[Range]) -> list[bool]:
+    """Expand the ranges of which ids are covered, to a list of covered-ness
+
+    Index +1, maps back to the id being checked.
+
+    NOTE: Uses, returns O(N) in memory, N = max(all ranges' end-value) in bits.
+    This is obviously prohibitive when N >> 1e12 = Gigabytes range!
+
+    For that reason, throws a ValueError when N > 1e12.
+
+
+    >>> expand([(1, 3), (2, 5)])
+    [True, True, True, True, True]
+    >>> expand([(1, 2), (4, 5)])
+    [True, True, False, True, True]
+    >>> expand([(1, 2), (4, 6)])
+    [True, True, False, True, True, True]
+    >>> expand([(1, 1), (4, 4)])
+    [True, False, False, True]
+
+    Raises:
+        ValueError: When memory footprint > 1GiB (max of range-end > 1e12)
+
+    """
+    max_range = max([end for _start, end in ranges])
+    if max_range > 1e12:
+        raise ValueError("Aborting as memory required would exceed 1GiB")
+    ids = [False for _ in range(max_range)]
+    for start, end in ranges:
+        expanded = list(range(start - 1, end))  # Move to 0-indexing via N-1
+        for i in expanded:
+            ids[i] = True
+    return ids
+
+
+def solution2_expand(puzzle_input: PuzzleInput) -> int:
+    """Solve day5 part 2 via PROHIBITIVE MEMORY-HUNGRY SOLUTION.
+
+    Solved by expanding ALL ranges into a "map of covered ids" as bool-array.
+    This way we unroll range 1-3 to tick to True ids 1, 2, and 3.
+    Repeat coverage flips True to still True, dealing with overlaps.
+    No need to deal with ordering of ranges either, as all will be covered.
+
+    We just need to count the resulting range, once expanded as a "list of ids"
+
+    >>> solution2(SAMPLE_INPUT)
+    14
+
+    Raises:
+        ValueError: When memory footprint > 1GiB (max of range-end > 1e12)
+    """
+    return sum(expand(puzzle_input[0]))
+
+
+def merge(ranges: list[Range]) -> list[Range]:
+    """Merge given intervals via sorted comparisons
+
+    Overlaps merged:
+    >>> merge([(1, 3), (2, 5)])
+    [(1, 5)]
+
+    Same start/end merged too:
+    >>> merge([(1, 3), (3, 5)])
+    [(1, 5)]
+
+    Adjacent ranges merged:
+    >>> merge([(1, 2), (3, 6)])
+    [(1, 6)]
+
+    Individual ranges allowed, let alone:
+    >>> merge([(1, 1), (4, 4)])
+    [(1, 1), (4, 4)]
+    """
+    sorted_ranges = sorted(ranges, key=lambda range: range[0])
+    acc = []
+    s0, e0 = sorted_ranges[0]
+    for s1, e1 in sorted_ranges[1:]:
+        # Overlap / Adjacent: Collapse, taking biggest
+        if s1 <= e0 + 1:
+            e0 = max(e0, e1)
+        else:
+            # Not adjacent: collect the interval 0, ratchet up interval
+            acc.append((s0, e0))
+            s0, e0 = s1, e1
+    # Remembering to pick the last remaining interval
+    return acc + [(s0, e0)]
+
+
+def count_range(ranges: list[Range]) -> int:
+    """Count how many numbers are there in a given list of ranges
+
+    >>> count_range(merge(SAMPLE_INPUT[0]))
+    14
+    """
+    return sum([end - start + 1 for start, end in ranges])
+
+
+def solution2(puzzle_input: PuzzleInput) -> int:
+    """Solve day 5 part 2, using proper sorted interval merging
+
+    >>> solution2(SAMPLE_INPUT)
+    14
+    """
+    return count_range(merge(puzzle_input[0]))
 
 
 def read_puzzle_input(puzzle_input: str) -> PuzzleInput:
