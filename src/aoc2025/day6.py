@@ -26,10 +26,12 @@ OP_MAP: dict[Operator, Any] = {"*": np.multiply, "+": np.add}
 
 
 def solution1(puzzle_input: PuzzleInput) -> int:
-    """Solve day6 part 1
+    """Solve day6 part 1, but also part 2 when data processed
 
     >>> solution1(SAMPLE_INPUT)
     4277556
+    >>> solution1(rtl_read_sheet(SAMPLE_INPUT_STR))
+    3263827
     """
     acc = 0
     sheet, operators = puzzle_input
@@ -42,9 +44,34 @@ def solution1(puzzle_input: PuzzleInput) -> int:
     return acc
 
 
-def solution2(puzzle_input) -> int:
-    """Solve day6 part 2"""
-    return 0
+def rtl_read_sheet(puzzle_input: str) -> PuzzleInput:
+    """Read the given sheet in right to left format, per part 2
+
+    >>> rtl_read_sheet(SAMPLE_INPUT_STR)[0]
+    [[4, 175, 8, 356], [431, 581, 248, 24], [623, 32, 369, 1]]
+    """
+    *num_strlist, operators = puzzle_input.splitlines()
+    width = max(len(line) for line in num_strlist)
+    padded = [list(line.ljust(width)) for line in num_strlist]
+    grid = np.array(padded, dtype="U1")
+    flipped = np.transpose(grid)[::-1, :]  # full char line = number
+    operators_trimmed = re.sub(r" +", " ", operators).strip()
+    ops = [cast(Operator, op) for op in operators_trimmed.split(" ")]
+    sheet: Sheet = []
+    line: list[int] = []
+    for i in range(width):
+        number_str = "".join(flipped[i]).strip()
+        if not number_str:  # Empty line = separator for new problem
+            sheet.append(line)
+            line = []
+            continue
+        # Line has number: append
+        line.append(int(number_str))
+    # Last line won't have a separator: take manually
+    sheet.append(line)
+    # Last second transposition:
+    grid = np.transpose(np.array(sheet, dtype=int))
+    return grid.tolist(), ops[::-1]
 
 
 def read_puzzle_input(puzzle_input: str) -> PuzzleInput:
@@ -68,4 +95,4 @@ def solve1_string(puzzle_input: str) -> int:
 
 def solve2_string(puzzle_input: str) -> int:
     """Convert list to proper format and solve day6 solution2"""
-    return solution2(read_puzzle_input(puzzle_input))
+    return solution1(rtl_read_sheet(puzzle_input))
