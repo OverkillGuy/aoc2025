@@ -90,3 +90,4 @@ check_untyped_defs = true
 2025-05-1 = "aoc2025.day5:solve1_string"
 2025-05-2 = "aoc2025.day5:solve2_string"
 2025-06-1 = "aoc2025.day6:solve1_string"
+2025-06-2 = "aoc2025.day6:solve2_string"

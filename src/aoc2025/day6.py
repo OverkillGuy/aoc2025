@@ -48,7 +48,7 @@ def rtl_read_sheet(puzzle_input: str) -> PuzzleInput:
     """Read the given sheet in right to left format, per part 2
 
     >>> rtl_read_sheet(SAMPLE_INPUT_STR)[0]
-    [[4, 431, 623], [175, 581, 32], [8, 248, 369], [356, 24, 1]]
+    [[4, 175, 8, 356], [431, 581, 248, 24], [623, 32, 369, 1]]
     """
     *num_strlist, operators = puzzle_input.splitlines()
     width = max(len(line) for line in num_strlist)
@@ -69,7 +69,9 @@ def rtl_read_sheet(puzzle_input: str) -> PuzzleInput:
         line.append(int(number_str))
     # Last line won't have a separator: take manually
     sheet.append(line)
-    return sheet, ops[::-1]
+    # Last second transposition:
+    grid = np.transpose(np.array(sheet, dtype=int))
+    return grid.tolist(), ops[::-1]
 
 
 def read_puzzle_input(puzzle_input: str) -> PuzzleInput:
